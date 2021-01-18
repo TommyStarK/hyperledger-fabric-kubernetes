@@ -1,0 +1,81 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderer3-deployment
+  namespace: dummy
+  labels: 
+    component: orderer3
+    type: orderer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: orderer3
+      type: orderer
+  template:
+    metadata:
+      labels:
+        component: orderer3
+        type: orderer
+    spec:
+      volumes:
+        - name: hlf-artifacts
+          emptyDir: {}
+      initContainers:
+        - name: git-clone
+          image: alpine/git
+          args:
+            - clone
+            - --single-branch
+            - --
+            - https://github.com/TommyStarK/hyperledger-fabric-network.git
+            - /network
+          volumeMounts:
+            - name: hlf-artifacts
+              mountPath: /network
+      containers:
+        - name: orderer3
+          image: hyperledger/fabric-orderer:2.3.0
+          workingDir: /opt/gopath/src/github.com/hyperledger/fabric
+          ports:
+            - containerPort: 7050
+          env:
+            - name: FABRIC_LOGGING_SPEC
+              value: info
+            - name: ORDERER_GENERAL_BOOTSTRAPMETHOD
+              value: file
+            - name: ORDERER_GENERAL_BOOTSTRAPFILE
+              value: /var/hyperledger/orderer/orderer.genesis.block
+            - name: ORDERER_GENERAL_LISTENADDRESS
+              value: "0.0.0.0"
+            - name: ORDERER_GENERAL_LISTENPORT
+              value: "7050"
+            - name: ORDERER_GENERAL_LOCALMSPID
+              value: OrdererMSP
+            - name: ORDERER_GENERAL_LOCALMSPDIR
+              value: /var/hyperledger/orderer/msp
+            - name: ORDERER_GENERAL_TLS_ENABLED
+              value: "true"
+            - name: ORDERER_GENERAL_TLS_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_GENERAL_TLS_CERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+            - name: ORDERER_GENERAL_CLUSTER_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+          volumeMounts:
+            - name: hlf-artifacts
+              mountPath: /var/hyperledger/orderer/orderer.genesis.block
+              subPath: channel-artifacts/genesis.block
+            - name: hlf-artifacts
+              mountPath: /var/hyperledger/orderer/msp
+              subPath: crypto-config/ordererOrganizations/dummy.com/orderers/orderer3.dummy.com/msp
+            - name: hlf-artifacts
+              mountPath: /var/hyperledger/orderer/tls
+              subPath: crypto-config/ordererOrganizations/dummy.com/orderers/orderer3.dummy.com/tls
