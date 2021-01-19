@@ -1,0 +1,96 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peer-org3-deployment
+  namespace: dummy
+  labels: 
+    component: peer-org3
+    type: peer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: peer-org3
+      type: peer
+  template:
+    metadata:
+      labels:
+        component: peer-org3
+        type: peer
+    spec:
+      volumes:
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+            type: File
+        - name: hlf-artifacts
+          emptyDir: {}
+      initContainers:
+        - name: git-clone
+          image: alpine/git
+          args:
+            - clone
+            - --branch
+            - kubernetes
+            - --single-branch
+            - --
+            - https://github.com/TommyStarK/hyperledger-fabric-network.git
+            - /network
+          volumeMounts:
+            - name: hlf-artifacts
+              mountPath: /network
+      containers:
+        - name: peer-org3
+          image: hyperledger/fabric-peer:2.3.0
+          workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+          ports:
+            - containerPort: 7051
+            - containerPort: 7052
+          env:
+            - name: FABRIC_LOGGING_SPEC
+              value: info
+            - name: CORE_PEER_ID
+              value: peer-org3-service
+            - name: CORE_PEER_ADDRESS
+              value: peer-org3-service:7051
+            - name: CORE_PEER_LISTENADDRESS
+              value: 0.0.0.0:7051
+            - name: CORE_PEER_CHAINCODELISTENADDRESS
+              value: 0.0.0.0:7052
+            - name: CORE_PEER_LOCALMSPID
+              value: Org3MSP
+            - name: CORE_PEER_MSPCONFIGPATH
+              value: /var/hyperledger/peer/msp
+            - name: CORE_PEER_PROFILE_ENABLED
+              value: "true"
+            - name: CORE_PEER_GOSSIP_ORGLEADER
+              value: "false"
+            - name: CORE_PEER_GOSSIP_USELEADERELECTION
+              value: "true"
+            - name: CORE_PEER_GOSSIP_BOOTSTRAP
+              value: peer-org3-service:7051
+            - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
+              value: peer-org3-service:7051
+            - name: CORE_PEER_TLS_ENABLED
+              value: "true"
+            - name: CORE_PEER_TLS_ROOTCERT_FILE
+              value: /var/hyperledger/peer/tls/ca.crt
+            - name: CORE_PEER_TLS_CERT_FILE
+              value: /var/hyperledger/peer/tls/server.crt
+            - name: CORE_PEER_TLS_KEY_FILE
+              value: /var/hyperledger/peer/tls/server.key
+            - name: CORE_PEER_TLS_SERVERHOSTOVERRIDE
+              value: peer-org3-service
+            - name: CORE_VM_ENDPOINT
+              value: unix:///host/var/run/docker.sock
+          volumeMounts:
+            - name: docker-socket
+              mountPath: /host/var/run/docker.sock
+              readOnly: false
+            - name: hlf-artifacts
+              mountPath: /var/hyperledger/peer/msp
+              subPath: crypto-config/peerOrganizations/org3.default.svc.cluster.local/peers/peer-org3-service/msp
+            - name: hlf-artifacts
+              mountPath: /var/hyperledger/peer/tls
+              subPath: crypto-config/peerOrganizations/org3.default.svc.cluster.local/peers/peer-org3-service/tls

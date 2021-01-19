@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: peer-org1-service
+  name: peer-org2-service
   namespace: dummy
   labels:
-    component: peer-org1
+    component: peer-org2
     type: peer
 spec:
   type: ClusterIP
   selector:
-    component: peer-org1
+    component: peer-org2
     type: peer
   ports:
     - name: listen-address
