@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orderer-deployment
+  name: orderer3-deployment
   namespace: dummy
   labels: 
-    component: orderer
+    component: orderer3
     type: orderer
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: orderer
+      component: orderer3
       type: orderer
   template:
     metadata:
       labels:
-        component: orderer
+        component: orderer3
         type: orderer
     spec:
       volumes:
@@ -27,6 +27,8 @@ spec:
           image: alpine/git
           args:
             - clone
+            - --branch
+            - kubernetes
             - --single-branch
             - --
             - https://github.com/TommyStarK/hyperledger-fabric-network.git
@@ -35,7 +37,7 @@ spec:
             - name: hlf-artifacts
               mountPath: /network
       containers:
-        - name: orderer
+        - name: orderer3
           image: hyperledger/fabric-orderer:2.3.0
           workingDir: /opt/gopath/src/github.com/hyperledger/fabric
           ports:
@@ -75,7 +77,7 @@ spec:
               subPath: channel-artifacts/genesis.block
             - name: hlf-artifacts
               mountPath: /var/hyperledger/orderer/msp
-              subPath: crypto-config/ordererOrganizations/dummy.com/orderers/orderer.dummy.com/msp
+              subPath: crypto-config/ordererOrganizations/default.svc.cluster.local/orderers/orderer3-service/msp
             - name: hlf-artifacts
               mountPath: /var/hyperledger/orderer/tls
-              subPath: crypto-config/ordererOrganizations/dummy.com/orderers/orderer.dummy.com/tls
+              subPath: crypto-config/ordererOrganizations/default.svc.cluster.local/orderers/orderer3-service/tls

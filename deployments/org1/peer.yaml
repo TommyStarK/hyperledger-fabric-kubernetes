@@ -1,0 +1,96 @@
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: peer-org1-deployment
+#   labels: 
+#     component: peer-org1
+#     type: peer
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       component: peer-org1
+#       type: peer
+#   template:
+#     metadata:
+#       labels:
+#         component: peer-org1
+#         type: peer
+#     spec:
+#       volumes:
+#         - name: docker-socket
+#           hostPath:
+#             path: /var/run/docker.sock
+#             type: File
+#         - name: hlf-artifacts
+#           emptyDir: {}
+#       initContainers:
+#         - name: git-clone
+#           image: alpine/git
+#           args:
+#             - clone
+#             - --single-branch
+#             - --
+#             - https://github.com/TommyStarK/hyperledger-fabric-network.git
+#             - /network
+#           volumeMounts:
+#             - name: hlf-artifacts
+#               mountPath: /network
+#       containers:
+#         - name: orderer
+#           image: hyperledger/fabric-peer:2.3.0
+#           workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+#           ports:
+#             - containerPort: 7051
+#             - containerPort: 7052
+#           env:
+#             - name: FABRIC_LOGGING_SPEC
+#               vaue: info
+#             - name: CORE_PEER_ID
+#               vaue: peer0.org1.dummy.com
+#             - name: CORE_PEER_ADDRESS
+#               vaue: peer0.org1.dummy.com:7051
+#             - name: CORE_PEER_LISTENADDRESS
+#               vaue: 0.0.0.0:7051
+#             - name: CORE_PEER_CHAINCODELISTENADDRESS
+#               vaue: 0.0.0.0:7052
+#             - name: CORE_PEER_LOCALMSPID
+#               vaue: Org1MSP
+#             - name: CORE_PEER_MSPCONFIGPATH
+#               vaue: /etc/hyperledger/peer/msp
+#             - name: CORE_PEER_PROFILE_ENABLED
+#               vaue: "true"
+#             - name: CORE_PEER_GOSSIP_ORGLEADER
+#               vaue: "false"
+#             - name: CORE_PEER_GOSSIP_USELEADERELECTION
+#               vaue: "true"
+#             - name: CORE_PEER_GOSSIP_BOOTSTRAP
+#               vaue: peer0.org1.dummy.com:7051
+#             - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
+#               vaue: peer0.org1.dummy.com:7051
+#             - name: CORE_PEER_TLS_ENABLED
+#               vaue: "true"
+#             - name: CORE_PEER_TLS_ROOTCERT_FILE
+#               vaue: /etc/hyperledger/peer/tls/ca.crt
+#             - name: CORE_PEER_TLS_CERT_FILE
+#               vaue: /etc/hyperledger/peer/tls/server.crt
+#             - name: CORE_PEER_TLS_KEY_FILE
+#               vaue: /etc/hyperledger/peer/tls/server.key
+#             - name: CORE_PEER_TLS_SERVERHOSTOVERRIDE
+#               vaue: peer0.org1.dummy.com
+#             - name: CORE_VM_ENDPOINT
+#               value: unix:///host/var/run/docker.sock
+#           volumeMounts:
+#             - name: docker-socket
+#               mountPath: /host/var/run/docker.sock
+#               readOnly: false
+#             - name: hlf-artifacts
+#               mountPath: /var/hyperledger/orderer/orderer.genesis.block
+#               subPath: channel-artifacts/genesis.block
+#             - name: hlf-artifacts
+#               mountPath: /var/hyperledger/orderer/msp
+#               subPath: crypto-config/ordererOrganizations/dummy.com/orderers/orderer.dummy.com/msp
+#             - name: hlf-artifacts
+#               mountPath: /var/hyperledger/orderer/tls
+#               subPath: crypto-config/ordererOrganizations/dummy.com/orderers/orderer.dummy.com/tls
