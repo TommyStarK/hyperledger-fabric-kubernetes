@@ -6,12 +6,10 @@ metadata:
   namespace: dummy
   labels:
     component: orderer
-    type: orderer
 spec:
   type: ClusterIP
   selector:
     component: orderer
-    type: orderer
   ports:
     - port: 7050
       targetPort: 7050
@@ -24,12 +22,10 @@ metadata:
   namespace: dummy
   labels:
     component: orderer2
-    type: orderer
 spec:
   type: ClusterIP
   selector:
     component: orderer2
-    type: orderer
   ports:
     - port: 7050
       targetPort: 7050
@@ -42,11 +38,25 @@ metadata:
   namespace: dummy
   labels:
     component: orderer3
-    type: orderer
 spec:
   type: ClusterIP
   selector:
     component: orderer3
+  ports:
+    - port: 7050
+      targetPort: 7050
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ordering-service
+  namespace: dummy
+  labels:
+    type: orderer
+spec:
+  type: ClusterIP
+  selector:
     type: orderer
   ports:
     - port: 7050

@@ -77,7 +77,7 @@ spec:
               subPath: channel-artifacts/genesis.block
             - name: hlf-artifacts
               mountPath: /var/hyperledger/orderer/msp
-              subPath: crypto-config/ordererOrganizations/default.svc.cluster.local/orderers/orderer-service/msp
+              subPath: crypto-config/ordererOrganizations/dummy.svc.cluster.local/orderers/orderer-service/msp
             - name: hlf-artifacts
               mountPath: /var/hyperledger/orderer/tls
-              subPath: crypto-config/ordererOrganizations/default.svc.cluster.local/orderers/orderer-service/tls
+              subPath: crypto-config/ordererOrganizations/dummy.svc.cluster.local/orderers/orderer-service/tls

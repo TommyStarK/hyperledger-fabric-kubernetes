@@ -90,7 +90,7 @@ spec:
               readOnly: false
             - name: hlf-artifacts
               mountPath: /var/hyperledger/peer/msp
-              subPath: crypto-config/peerOrganizations/org2.default.svc.cluster.local/peers/peer-org2-service/msp
+              subPath: crypto-config/peerOrganizations/org2.dummy.svc.cluster.local/peers/peer-org2-service/msp
             - name: hlf-artifacts
               mountPath: /var/hyperledger/peer/tls
-              subPath: crypto-config/peerOrganizations/org2.default.svc.cluster.local/peers/peer-org2-service/tls
+              subPath: crypto-config/peerOrganizations/org2.dummy.svc.cluster.local/peers/peer-org2-service/tls
