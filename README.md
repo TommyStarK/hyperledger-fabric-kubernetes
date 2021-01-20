@@ -13,5 +13,5 @@ The source code herein is not production ready. It is a demonstration of how to 
 - Delete the network
 
 ```bash
-❯ ./delete.sh
+❯ kubectl delete all --all --namespace dummy-com
 ```
