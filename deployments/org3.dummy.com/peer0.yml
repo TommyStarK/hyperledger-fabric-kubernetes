@@ -2,33 +2,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: peer-org3-deployment
-  namespace: dummy
+  name: "peer0.org3.dummy.com"
+  namespace: dummy-com
   labels: 
-    component: peer-org3
-    type: peer
+    component: "peer0.org3.dummy.com"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: peer-org3
-      type: peer
+      component: "peer0.org3.dummy.com"
   template:
     metadata:
       labels:
-        component: peer-org3
-        type: peer
+        component: "peer0.org3.dummy.com"
     spec:
-      volumes:
-        - name: docker-socket
-          hostPath:
-            path: /var/run/docker.sock
-            type: File
-        - name: hlf-artifacts
-          emptyDir: {}
       initContainers:
         - name: git-clone
-          image: alpine/git
+          image: bitnami/git
+          imagePullPolicy: IfNotPresent
           args:
             - clone
             - --branch
@@ -37,29 +28,30 @@ spec:
             - --
             - https://github.com/TommyStarK/hyperledger-fabric-network.git
             - /network
+          securityContext:
+            runAsUser: 1
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
           volumeMounts:
             - name: hlf-artifacts
               mountPath: /network
       containers:
-        - name: peer-org3
+        - name: peer0-org3-dummy-com
           image: hyperledger/fabric-peer:2.3.0
           workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-          ports:
-            - containerPort: 7051
-            - containerPort: 7052
           env:
             - name: FABRIC_LOGGING_SPEC
               value: info
             - name: CORE_PEER_ID
-              value: peer-org3-service
+              value: peer0-org3-dummy-com
             - name: CORE_PEER_ADDRESS
-              value: peer-org3-service:7051
+              value: peer0-org3-dummy-com:7051
             - name: CORE_PEER_LISTENADDRESS
               value: 0.0.0.0:7051
             - name: CORE_PEER_CHAINCODELISTENADDRESS
               value: 0.0.0.0:7052
             - name: CORE_PEER_LOCALMSPID
-              value: Org3MSP
+              value: Org1MSP
             - name: CORE_PEER_MSPCONFIGPATH
               value: /var/hyperledger/peer/msp
             - name: CORE_PEER_PROFILE_ENABLED
@@ -69,9 +61,9 @@ spec:
             - name: CORE_PEER_GOSSIP_USELEADERELECTION
               value: "true"
             - name: CORE_PEER_GOSSIP_BOOTSTRAP
-              value: peer-org3-service:7051
+              value: peer0-org3-dummy-com:7051
             - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
-              value: peer-org3-service:7051
+              value: peer0-org3-dummy-com:7051
             - name: CORE_PEER_TLS_ENABLED
               value: "true"
             - name: CORE_PEER_TLS_ROOTCERT_FILE
@@ -81,16 +73,26 @@ spec:
             - name: CORE_PEER_TLS_KEY_FILE
               value: /var/hyperledger/peer/tls/server.key
             - name: CORE_PEER_TLS_SERVERHOSTOVERRIDE
-              value: peer-org3-service
-            - name: CORE_VM_ENDPOINT
-              value: unix:///host/var/run/docker.sock
+              value: peer0-org3-dummy-com
+          ports:
+            - containerPort: 7051
+            - containerPort: 7052
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "nc -z -v 0.0.0.0 7051 > /dev/null 2>&1 && nc -z -v 0.0.0.0 7052 > /dev/null 2>&1"
+            initialDelaySeconds: 10
+            failureThreshold: 5
+            periodSeconds: 2
           volumeMounts:
-            - name: docker-socket
-              mountPath: /host/var/run/docker.sock
-              readOnly: false
             - name: hlf-artifacts
               mountPath: /var/hyperledger/peer/msp
-              subPath: crypto-config/peerOrganizations/org3.dummy.svc.cluster.local/peers/peer-org3-service/msp
+              subPath: crypto-config/peerOrganizations/org3.dummy.com/peers/peer0.org3.dummy.com/msp
             - name: hlf-artifacts
               mountPath: /var/hyperledger/peer/tls
-              subPath: crypto-config/peerOrganizations/org3.dummy.svc.cluster.local/peers/peer-org3-service/tls
+              subPath: crypto-config/peerOrganizations/org3.dummy.com/peers/peer0.org3.dummy.com/tls
+      volumes:
+        - name: hlf-artifacts
+          emptyDir: {}

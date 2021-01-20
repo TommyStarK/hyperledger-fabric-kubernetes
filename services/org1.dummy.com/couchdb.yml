@@ -1,0 +1,15 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: couchdb-org1-dummy-com
+  namespace: dummy-com
+spec:
+  type: ClusterIP
+  selector:
+    component: "couchdb.org1.dummy.com"
+  ports:
+  - name: "couchdb"
+    port: 5984
+    protocol: TCP
+    targetPort: 5984

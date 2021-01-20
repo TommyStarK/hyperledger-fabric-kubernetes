@@ -1,0 +1,63 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderer0-dummy-com
+  namespace: dummy-com
+spec:
+  type: ClusterIP
+  selector:
+    component: "orderer0.dummy.com"
+  ports:
+  - name: "grpcs"
+    port: 7050
+    protocol: TCP
+    targetPort: 7050
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderer1-dummy-com
+  namespace: dummy-com
+spec:
+  type: ClusterIP
+  selector:
+    component: "orderer1.dummy.com"
+  ports:
+  - name: "grpcs"
+    port: 7050
+    protocol: TCP
+    targetPort: 7050
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderer2-dummy-com
+  namespace: dummy-com
+spec:
+  type: ClusterIP
+  selector:
+    component: "orderer2.dummy.com"
+  ports:
+  - name: "grpcs"
+    port: 7050
+    protocol: TCP
+    targetPort: 7050
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ordering-service-dummy-com
+  namespace: dummy-com
+spec:
+  type: ClusterIP
+  selector:
+    type: orderer
+  ports:
+  - name: "grpcs"
+    port: 7050
+    protocol: TCP
+    targetPort: 7050
