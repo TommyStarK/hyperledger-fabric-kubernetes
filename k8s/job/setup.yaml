@@ -14,8 +14,6 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - clone
-            - --branch
-            - dev
             - --single-branch
             - --
             - https://github.com/TommyStarK/hyperledger-fabric-kubernetes.git
