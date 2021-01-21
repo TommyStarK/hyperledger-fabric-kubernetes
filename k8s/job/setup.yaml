@@ -57,8 +57,8 @@ spec:
         - name: repo
           mountPath: /repo
         - name: chaincode-buildpack
-          mountPath: /repo/buildpack/bin
-          subPath: buildpack/bin
+          mountPath: /repo/chaincode-buildpack
+          subPath: chaincode-buildpack
         # - name: chaincode-buildpack
         #   mountPath: /repo/hlf-config/core.yaml
         #   subPath: peer/config/core.yaml
