@@ -1,0 +1,105 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "peer0.org1.dummy.com"
+  namespace: dummy-com
+  labels: 
+    component: "peer0.org1.dummy.com"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: "peer0.org1.dummy.com"
+  template:
+    metadata:
+      labels:
+        component: "peer0.org1.dummy.com"
+    spec:
+      containers:
+        - name: peer0-org1-dummy-com
+          image: hyperledger/fabric-peer:2.3.0
+          workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+          env:
+            - name: DOCKER_NS
+              value: hyperledger
+            - name: FABRIC_LOGGING_SPEC
+              value: info
+            - name: TWO_DIGIT_VERSION
+              value: "2.3"
+            - name: CORE_PEER_ID
+              value: peer0-org1-dummy-com
+            - name: CORE_PEER_ADDRESS
+              value: peer0-org1-dummy-com:7051
+            - name: CORE_PEER_LISTENADDRESS
+              value: 0.0.0.0:7051
+            - name: CORE_PEER_CHAINCODELISTENADDRESS
+              value: 0.0.0.0:7052
+            - name: CORE_PEER_LOCALMSPID
+              value: Org1MSP
+            - name: CORE_PEER_MSPCONFIGPATH
+              value: /var/hyperledger/peer/msp
+            - name: CORE_PEER_GOSSIP_ORGLEADER
+              value: "false"
+            - name: CORE_PEER_GOSSIP_USELEADERELECTION
+              value: "true"
+            - name: CORE_PEER_GOSSIP_BOOTSTRAP
+              value: peer0-org1-dummy-com:7051
+            - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
+              value: peer0-org1-dummy-com:7051
+            - name: CORE_PEER_TLS_ENABLED
+              value: "true"
+            - name: CORE_PEER_TLS_ROOTCERT_FILE
+              value: /var/hyperledger/peer/tls/ca.crt
+            - name: CORE_PEER_TLS_CERT_FILE
+              value: /var/hyperledger/peer/tls/server.crt
+            - name: CORE_PEER_TLS_KEY_FILE
+              value: /var/hyperledger/peer/tls/server.key
+            - name: CORE_PEER_TLS_SERVERHOSTOVERRIDE
+              value: peer0-org1-dummy-com
+            - name: CORE_LEDGER_STATE_STATEDATABASE
+              value: CouchDB
+            - name: CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS
+              value: couchdb-org1-dummy-com:5984
+            - name: CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-org1-dummy-com
+                  key: username
+            - name: CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-org1-dummy-com
+                  key: password
+          ports:
+            - containerPort: 7051
+            - containerPort: 7052
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "nc -z -v 0.0.0.0 7051 > /dev/null 2>&1 && nc -z -v 0.0.0.0 7052 > /dev/null 2>&1"
+            initialDelaySeconds: 10
+            failureThreshold: 5
+            periodSeconds: 2
+          volumeMounts:
+            - name: chaincode-buildpack
+              mountPath: /opt/buildpack/bin
+              subPath: bin
+            - name: chaincode-buildpack
+              mountPath: /etc/hyperledger/fabric/core.yaml
+              subPath: config/core.yaml
+            - name: peer0-org1-hlf-certificates
+              mountPath: /var/hyperledger/peer/msp
+              subPath: certificates/msp
+            - name: peer0-org1-hlf-certificates
+              mountPath: /var/hyperledger/peer/tls
+              subPath: certificates/tls
+      volumes:
+        - name: chaincode-buildpack
+          persistentVolumeClaim:
+            claimName: chaincode-buildpack
+        - name: peer0-org1-hlf-certificates
+          persistentVolumeClaim:
+            claimName: peer0-org1-hlf-certificates

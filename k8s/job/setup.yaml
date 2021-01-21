@@ -1,0 +1,104 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup
+  namespace: dummy-com
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: git-clone
+          image: bitnami/git
+          imagePullPolicy: IfNotPresent
+          args:
+            - clone
+            - --single-branch
+            - --
+            - https://github.com/TommyStarK/hyperledger-fabric-kubernetes.git
+            - /repo
+          securityContext:
+            runAsUser: 1
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: repo
+              mountPath: /repo
+      containers:
+      - name: fabric-tools
+        image: hyperledger/fabric-tools:2.3.0
+        imagePullPolicy: IfNotPresent
+        workingDir: /repo
+        command: ["/bin/sh",  "-c"]
+        args:
+        - cd hlf-config;
+          cryptogen generate --config=./crypto-config.yaml;
+          configtxgen -profile OrdererGenesis -channelID orderer-system-channel -outputBlock ./orderer.genesis.block;
+          cd -;
+          mkdir -p /{buildpack/bin,buildpack/config,orderer0,orderer1,orderer2,peer0.org1,peer0.org2,peer0.org3};
+          cp /repo/hlf-config/orderer.genesis.block /orderer0;
+          cp /repo/hlf-config/orderer.genesis.block /orderer1;
+          cp /repo/hlf-config/orderer.genesis.block /orderer2;
+          cp /repo/hlf-config/core.yaml /buildpack/config;
+          cp -R /repo/buildpack/bin/* /buildpack/bin;
+          cp -R /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/* /orderer0;
+          cp -R /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/* /orderer1;
+          cp -R /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/* /orderer2;
+          cp -R /repo/hlf-config/crypto-config/peerOrganizations/org1.dummy.com/peers/peer0.org1.dummy.com/* /peer0.org1;
+          cp -R /repo/hlf-config/crypto-config/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/* /peer0.org2;
+          cp -R /repo/hlf-config/crypto-config/peerOrganizations/org3.dummy.com/peers/peer0.org3.dummy.com/* /peer0.org3;
+        env:
+          - name: FABRIC_CFG_PATH
+            value: /repo/hlf-config
+        volumeMounts:
+        - name: repo
+          mountPath: /repo
+        - name: chaincode-buildpack
+          mountPath: /buildpack/bin
+          subPath: bin
+        - name: chaincode-buildpack
+          mountPath: /buildpack/config
+          subPath: config
+        - name: orderer0-hlf-artifacts
+          mountPath: /orderer0
+          subPath: artifacts
+        - name: orderer1-hlf-artifacts
+          mountPath: /orderer1
+          subPath: artifacts
+        - name: orderer2-hlf-artifacts
+          mountPath: /orderer2
+          subPath: artifacts
+        - name: peer0-org1-hlf-certificates
+          mountPath: /peer0.org1
+          subPath: certificates
+        - name: peer0-org2-hlf-certificates
+          mountPath: /peer0.org2
+          subPath: certificates
+        - name: peer0-org3-hlf-certificates
+          mountPath: /peer0.org3
+          subPath: certificates
+      volumes:
+      - name: repo
+        emptyDir: {}
+      - name: chaincode-buildpack
+        persistentVolumeClaim:
+          claimName: chaincode-buildpack
+      - name: orderer0-hlf-artifacts
+        persistentVolumeClaim:
+          claimName: orderer0-hlf-artifacts
+      - name: orderer1-hlf-artifacts
+        persistentVolumeClaim:
+          claimName: orderer1-hlf-artifacts
+      - name: orderer2-hlf-artifacts
+        persistentVolumeClaim:
+          claimName: orderer2-hlf-artifacts
+      - name: peer0-org1-hlf-certificates
+        persistentVolumeClaim:
+          claimName: peer0-org1-hlf-certificates
+      - name: peer0-org2-hlf-certificates
+        persistentVolumeClaim:
+          claimName: peer0-org2-hlf-certificates
+      - name: peer0-org3-hlf-certificates
+        persistentVolumeClaim:
+          claimName: peer0-org3-hlf-certificates
