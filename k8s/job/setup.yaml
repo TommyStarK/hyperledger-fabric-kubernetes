@@ -54,50 +54,50 @@ spec:
         volumeMounts:
         - name: repo
           mountPath: /repo
-        - name: chaincode-buildpack
-          mountPath: /repo/chaincode-buildpack
+        # - name: chaincode-buildpack
+        #   mountPath: /repo/chaincode-buildpack
         # - name: chaincode-buildpack
         #   mountPath: /repo/hlf-config/core.yaml
         #   subPath: peer/config/core.yaml
         # - name: hlf-shared-artifacts
         #   mountPath: /repo/hlf-config/genesis.block
         #   subPath: orderer.genesis.block
-        - name: orderer0-hlf-certificates
-          mountPath: /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com
-        - name: orderer1-hlf-certificates
-          mountPath: /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com
-        - name: orderer2-hlf-certificates
-          mountPath: /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer2.dummy.com
-        - name: peer0-org1-hlf-certificates
-          mountPath: /repo/hlf-config/crypto-config/peerOrganizations/org1.dummy.com/peers/peer0.org1.dummy.com
-        - name: peer0-org2-hlf-certificates
-          mountPath: /repo/hlf-config/crypto-config/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com
-        - name: peer0-org3-hlf-certificates
-          mountPath: /repo/hlf-config/crypto-config/peerOrganizations/org3.dummy.com/peers/peer0.org3.dummy.com
+        # - name: orderer0-hlf-certificates
+        #   mountPath: /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com
+        # - name: orderer1-hlf-certificates
+        #   mountPath: /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com
+        # - name: orderer2-hlf-certificates
+        #   mountPath: /repo/hlf-config/crypto-config/ordererOrganizations/dummy.com/orderers/orderer2.dummy.com
+        # - name: peer0-org1-hlf-certificates
+        #   mountPath: /repo/hlf-config/crypto-config/peerOrganizations/org1.dummy.com/peers/peer0.org1.dummy.com
+        # - name: peer0-org2-hlf-certificates
+        #   mountPath: /repo/hlf-config/crypto-config/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com
+        # - name: peer0-org3-hlf-certificates
+        #   mountPath: /repo/hlf-config/crypto-config/peerOrganizations/org3.dummy.com/peers/peer0.org3.dummy.com
       volumes:
       - name: repo
         emptyDir: {}
-      - name: chaincode-buildpack
-        persistentVolumeClaim:
-          claimName: chaincode-buildpack
+      # - name: chaincode-buildpack
+      #   persistentVolumeClaim:
+      #     claimName: chaincode-buildpack
       # - name: hlf-shared-artifacts
       #   persistentVolumeClaim:
       #     claimName: hlf-shared-artifacts
-      - name: orderer0-hlf-certificates
-        persistentVolumeClaim:
-          claimName: orderer0-hlf-certificates
-      - name: orderer1-hlf-certificates
-        persistentVolumeClaim:
-          claimName: orderer1-hlf-certificates
-      - name: orderer2-hlf-certificates
-        persistentVolumeClaim:
-          claimName: orderer2-hlf-certificates
-      - name: peer0-org1-hlf-certificates
-        persistentVolumeClaim:
-          claimName: peer0-org1-hlf-certificates
-      - name: peer0-org2-hlf-certificates
-        persistentVolumeClaim:
-          claimName: peer0-org2-hlf-certificates
-      - name: peer0-org3-hlf-certificates
-        persistentVolumeClaim:
-          claimName: peer0-org3-hlf-certificates
+      # - name: orderer0-hlf-certificates
+      #   persistentVolumeClaim:
+      #     claimName: orderer0-hlf-certificates
+      # - name: orderer1-hlf-certificates
+      #   persistentVolumeClaim:
+      #     claimName: orderer1-hlf-certificates
+      # - name: orderer2-hlf-certificates
+      #   persistentVolumeClaim:
+      #     claimName: orderer2-hlf-certificates
+      # - name: peer0-org1-hlf-certificates
+      #   persistentVolumeClaim:
+      #     claimName: peer0-org1-hlf-certificates
+      # - name: peer0-org2-hlf-certificates
+      #   persistentVolumeClaim:
+      #     claimName: peer0-org2-hlf-certificates
+      # - name: peer0-org3-hlf-certificates
+      #   persistentVolumeClaim:
+      #     claimName: peer0-org3-hlf-certificates
