@@ -17,25 +17,6 @@ spec:
         component: "orderer1.dummy.com"
         type: orderer
     spec:
-      initContainers:
-        - name: git-clone
-          image: bitnami/git
-          imagePullPolicy: IfNotPresent
-          args:
-            - clone
-            - --branch
-            - kubernetes
-            - --single-branch
-            - --
-            - https://github.com/TommyStarK/hyperledger-fabric-network.git
-            - /network
-          securityContext:
-            runAsUser: 1
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-          volumeMounts:
-            - name: hlf-artifacts
-              mountPath: /network
       containers:
         - name: orderer1-dummy-com
           image: hyperledger/fabric-orderer:2.3.0
@@ -82,15 +63,16 @@ spec:
             failureThreshold: 5
             periodSeconds: 2
           volumeMounts:
-            - name: hlf-artifacts
+            - name: orderer1-hlf-artifacts
               mountPath: /var/hyperledger/orderer/orderer.genesis.block
-              subPath: channel-artifacts/genesis.block
-            - name: hlf-artifacts
+              subPath: artifacts/orderer.genesis.block
+            - name: orderer1-hlf-artifacts
               mountPath: /var/hyperledger/orderer/msp
-              subPath: crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/msp
-            - name: hlf-artifacts
+              subPath: artifacts/msp
+            - name: orderer1-hlf-artifacts
               mountPath: /var/hyperledger/orderer/tls
-              subPath: crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/tls
+              subPath: artifacts/tls
       volumes:
-        - name: hlf-artifacts
-          emptyDir: {}
+        - name: orderer1-hlf-artifacts
+          persistentVolumeClaim:
+            claimName: orderer1-hlf-artifacts

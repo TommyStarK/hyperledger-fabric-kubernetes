@@ -16,25 +16,6 @@ spec:
       labels:
         component: "peer0.org2.dummy.com"
     spec:
-      initContainers:
-        - name: git-clone
-          image: bitnami/git
-          imagePullPolicy: IfNotPresent
-          args:
-            - clone
-            - --branch
-            - kubernetes
-            - --single-branch
-            - --
-            - https://github.com/TommyStarK/hyperledger-fabric-network.git
-            - /network
-          securityContext:
-            runAsUser: 1
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-          volumeMounts:
-            - name: hlf-artifacts
-              mountPath: /network
       containers:
         - name: peer0-org2-dummy-com
           image: hyperledger/fabric-peer:2.3.0
@@ -55,7 +36,7 @@ spec:
             - name: CORE_PEER_CHAINCODELISTENADDRESS
               value: 0.0.0.0:7052
             - name: CORE_PEER_LOCALMSPID
-              value: Org1MSP
+              value: Org2MSP
             - name: CORE_PEER_MSPCONFIGPATH
               value: /var/hyperledger/peer/msp
             - name: CORE_PEER_GOSSIP_ORGLEADER
@@ -89,12 +70,22 @@ spec:
             failureThreshold: 5
             periodSeconds: 2
           volumeMounts:
-            - name: hlf-artifacts
+            - name: chaincode-buildpack
+              mountPath: /opt/buildpack/bin
+              subPath: bin
+            - name: chaincode-buildpack
+              mountPath: /etc/hyperledger/fabric/core.yaml
+              subPath: config/core.yaml
+            - name: peer0-org2-hlf-certificates
               mountPath: /var/hyperledger/peer/msp
-              subPath: crypto-config/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/msp
-            - name: hlf-artifacts
+              subPath: certificates/msp
+            - name: peer0-org2-hlf-certificates
               mountPath: /var/hyperledger/peer/tls
-              subPath: crypto-config/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/tls
+              subPath: certificates/tls
       volumes:
-        - name: hlf-artifacts
-          emptyDir: {}
+        - name: chaincode-buildpack
+          persistentVolumeClaim:
+            claimName: chaincode-buildpack
+        - name: peer0-org2-hlf-certificates
+          persistentVolumeClaim:
+            claimName: peer0-org2-hlf-certificates

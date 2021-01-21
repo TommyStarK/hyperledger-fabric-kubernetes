@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: orderer2-hlf-certificates
+  name: orderer0-hlf-artifacts
   namespace: dummy-com
 spec:
   accessModes:
