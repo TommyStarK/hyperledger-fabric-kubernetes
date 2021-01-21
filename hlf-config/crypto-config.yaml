@@ -1,0 +1,50 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: dummy.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer0
+        SANS:
+          - localhost
+          - orderer0-dummy-com
+      - Hostname: orderer1
+        SANS:
+          - localhost
+          - orderer1-dummy-com
+      - Hostname: orderer2
+        SANS:
+          - localhost
+          - orderer2-dummy-com
+    CA:
+      OrganizationalUnit: admin
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.dummy.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+        - "{{.Hostname}}-org1-dummy-com"
+    Users:
+      Count: 1
+  - Name: Org2
+    Domain: org2.dummy.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+        - "{{.Hostname}}-org2-dummy-com"
+    Users:
+      Count: 1
+  - Name: Org3
+    Domain: org3.dummy.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+        - "{{.Hostname}}-org3-dummy-com"
+    Users:
+      Count: 1
