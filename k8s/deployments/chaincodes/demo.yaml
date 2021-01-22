@@ -1,0 +1,28 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaincode-demo
+  namespace: dummy-com
+  labels: 
+    chaincode: chaincode-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      chaincode: chaincode-demo
+  template:
+    metadata:
+      labels:
+        chaincode: chaincode-demo
+    spec:
+      containers:
+        - name: chaincode-demo
+          image: tommystark/chaincode-as-external-service
+          env:
+            - name: CHAINCODE_SERVER_ADDRESS
+              value: 0.0.0.0:9999
+            - name: CHAINCODE_ID
+              value: chaincode-as-external-service_1.0:47e498ee398394870cf741c7037178a9f1608575c5367f8bfb198c1801fdcc28
+          ports:
+            - containerPort: 9999
