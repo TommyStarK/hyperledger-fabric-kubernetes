@@ -21,6 +21,5 @@ The source code herein is not production ready.
 - Delete the network
 
 ```bash
-❯ kubectl delete pod,deployment,service,job,secrets,pvc --all --namespace dummy-com
-❯ kubectl delete pv local-volume
+❯ kubectl delete pod,deployment,service,job,secrets,pvc --all --namespace dummy-com && kubectl delete pv local-volume
 ```
