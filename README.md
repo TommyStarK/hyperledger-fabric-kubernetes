@@ -15,12 +15,11 @@ The source code herein is not production ready.
 - Assuming you have a running cluster or minikube:
 
 ```bash
-❯ ./apply.sh
+❯ ./deploy.sh
 ```
 
 - Delete the network
 
 ```bash
-❯ kubectl delete pod,deployment,service,job,secrets,pvc --all --namespace dummy-com
-❯ kubectl delete pv local-volume
+❯ kubectl delete pod,deployment,service,job,secrets,pvc --all --namespace dummy-com && kubectl delete pv local-volume
 ```
