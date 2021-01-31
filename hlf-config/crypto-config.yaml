@@ -15,8 +15,6 @@ OrdererOrgs:
         SANS:
           - localhost
           - orderer2-dummy-com
-    CA:
-      OrganizationalUnit: admin
 PeerOrgs:
   - Name: Org1
     Domain: org1.dummy.com

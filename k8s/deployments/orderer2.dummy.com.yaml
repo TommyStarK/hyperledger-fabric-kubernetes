@@ -63,16 +63,19 @@ spec:
             failureThreshold: 5
             periodSeconds: 2
           volumeMounts:
-            - name: orderer2-hlf-artifacts
+            - name: hlf-artifacts
               mountPath: /var/hyperledger/orderer/orderer.genesis.block
-              subPath: artifacts/orderer.genesis.block
-            - name: orderer2-hlf-artifacts
+              subPath: orderer.genesis.block
+            - name: hlf-crypto-config
               mountPath: /var/hyperledger/orderer/msp
-              subPath: artifacts/msp
-            - name: orderer2-hlf-artifacts
+              subPath: ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/msp
+            - name: hlf-crypto-config
               mountPath: /var/hyperledger/orderer/tls
-              subPath: artifacts/tls
+              subPath: ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/tls
       volumes:
-        - name: orderer2-hlf-artifacts
-          persistentVolumeClaim:
-            claimName: orderer2-hlf-artifacts
+      - name: hlf-artifacts
+        persistentVolumeClaim:
+          claimName: hlf-artifacts
+      - name: hlf-crypto-config
+        persistentVolumeClaim:
+          claimName: hlf-crypto-config

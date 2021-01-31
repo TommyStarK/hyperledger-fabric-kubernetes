@@ -76,16 +76,16 @@ spec:
             - name: chaincode-buildpack
               mountPath: /etc/hyperledger/fabric/core.yaml
               subPath: config/core.yaml
-            - name: peer0-org2-hlf-certificates
+            - name: hlf-crypto-config
               mountPath: /var/hyperledger/peer/msp
-              subPath: certificates/msp
-            - name: peer0-org2-hlf-certificates
+              subPath: peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/msp
+            - name: hlf-crypto-config
               mountPath: /var/hyperledger/peer/tls
-              subPath: certificates/tls
+              subPath: peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/tls
       volumes:
         - name: chaincode-buildpack
           persistentVolumeClaim:
             claimName: chaincode-buildpack
-        - name: peer0-org2-hlf-certificates
+        - name: hlf-crypto-config
           persistentVolumeClaim:
-            claimName: peer0-org2-hlf-certificates
+            claimName: hlf-crypto-config

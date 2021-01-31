@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "cli.peer0.org2.dummy.com"
+  namespace: dummy-com
+  labels:
+    component: "cli.peer0.org2.dummy.com"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: "cli.peer0.org2.dummy.com"
+  template:
+    metadata:
+      labels:
+        component: "cli.peer0.org2.dummy.com"
+    spec:
+      containers:
+        - name: cli-peer0-org2-dummy-com
+          image: hyperledger/fabric-tools:2.3.0
+          imagePullPolicy: IfNotPresent
+          workingDir: /etc/hyperledger/fabric/
+          tty: true
+          stdin: true
+          env:
+            - name: TZ
+              value: "Europe/Paris"
+            - name: FABRIC_LOGGING_SPEC
+              value: info
+            - name: GOPATH
+              value: /opt/gopath
+            - name: CORE_PEER_ID
+              value: cli-peer0-org2-dummy-com
+            - name: CORE_PEER_ADDRESS
+              value: peer0-org2-dummy-com:7051
+            - name: CORE_PEER_LOCALMSPID
+              value: Org2MSP
+            - name: CORE_PEER_TLS_ENABLED
+              value: "true"
+            - name: CORE_PEER_TLS_CLIENTCERT_FILE
+              value: /etc/hyperledger/fabric/crypto/peerOrganizations/org2.dummy.com/users/Admin@org2.dummy.com/tls/client.crt
+            - name: CORE_PEER_TLS_CLIENTKEY_FILE
+              value: /etc/hyperledger/fabric/crypto/peerOrganizations/org2.dummy.com/users/Admin@org2.dummy.com/tls/client.key
+            - name: CORE_PEER_TLS_ROOTCERT_FILE
+              value: /etc/hyperledger/fabric/crypto/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/tls/ca.crt
+            - name: CORE_PEER_MSPCONFIGPATH
+              value: /etc/hyperledger/fabric/crypto/peerOrganizations/org2.dummy.com/users/Admin@org2.dummy.com/msp
+            - name: CHANNEL_NAME
+              value: channelall
+            - name: ORDERER_CA
+              value: /etc/hyperledger/fabric/crypto/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/msp/tlscacerts/tlsca.dummy.com-cert.pem
+            - name: ORDERER_ADMIN_TLS_SIGN_CERT
+              value: /etc/hyperledger/fabric/crypto/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/tls/server.crt
+            - name: ORDERER_ADMIN_TLS_PRIVATE_KEY
+              value: /etc/hyperledger/fabric/crypto/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/tls/server.key
+          volumeMounts:
+            - name: chaincode-package
+              mountPath: /etc/hyperledger/fabric/chaincodes
+            - name: hlf-artifacts
+              mountPath: /etc/hyperledger/fabric/artifacts
+            - name: hlf-crypto-config
+              mountPath: /etc/hyperledger/fabric/crypto
+      volumes:
+        - name: chaincode-package
+          persistentVolumeClaim:
+            claimName: chaincode-package
+        - name: hlf-artifacts
+          persistentVolumeClaim:
+            claimName: hlf-artifacts
+        - name: hlf-crypto-config
+          persistentVolumeClaim:
+            claimName: hlf-crypto-config
