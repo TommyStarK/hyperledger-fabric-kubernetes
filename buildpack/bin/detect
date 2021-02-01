@@ -3,8 +3,10 @@
 set -euo pipefail
 
 METADIR=$2
+type=$(cat "$METADIR/metadata.json" |grep type|awk '{print $2}')
+type=${type::-1}
 #check if the "type" field is set to "external"
-if [ "$(jq -r .type "$METADIR/metadata.json")" == "external" ]; then
+if [ "$type" == "external" ]; then
     exit 0
 fi
 
