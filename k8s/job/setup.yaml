@@ -37,9 +37,9 @@ spec:
           configtxgen -profile OrdererGenesis -channelID orderer-system-channel -outputBlock ./artifacts/orderer.genesis.block;
           configtxgen -profile ChannelAll -outputCreateChannelTx ./artifacts/channelall.tx -channelID channelall;
           cd -;
-          mkdir -p /{buildpack/bin,chaincode-package,peer-core-config};``
+          mkdir -p /{buildpack/bin,chaincode-package,peer-core-config};
           cp -R /repo/buildpack/bin/* /buildpack/bin;
-          cp /repo/chaincode-as-external-service/chaincode-as-external-service-pkg.tgz /chaincode-package;
+          cp -R /repo/chaincode-as-external-service /chaincode-package;
           cp /repo/hlf-config/core.yaml /peer-core-config;
         env:
           - name: FABRIC_CFG_PATH
