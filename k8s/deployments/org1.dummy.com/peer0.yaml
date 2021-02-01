@@ -21,12 +21,8 @@ spec:
           image: hyperledger/fabric-peer:2.3.0
           workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
           env:
-            # - name: DOCKER_NS
-            #   value: hyperledger
             - name: FABRIC_LOGGING_SPEC
-              value: info
-            # - name: TWO_DIGIT_VERSION
-            #   value: "2.3"
+              value: debug:cauthdsl,policies,msp,grpc,peer.gossip.mcs,gossip,leveldbhelper=info
             - name: CORE_PEER_ID
               value: peer0-org1-dummy-com
             - name: CORE_PEER_ADDRESS

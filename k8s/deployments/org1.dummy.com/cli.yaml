@@ -24,7 +24,7 @@ spec:
           stdin: true
           env:
             - name: FABRIC_LOGGING_SPEC
-              value: info
+              value: debug
             - name: CHANNEL_NAME
               value: channelall
             - name: CORE_PEER_ADDRESS
@@ -40,8 +40,6 @@ spec:
             - name: ORDERER_CA
               value: /etc/hyperledger/fabric/crypto/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/msp/tlscacerts/tlsca.dummy.com-cert.pem
           volumeMounts:
-            - name: chaincode-buildpack
-              mountPath: /opt/buildpack
             - name: chaincode-package
               mountPath: /etc/hyperledger/fabric/chaincodes
             - name: hlf-artifacts
@@ -49,9 +47,6 @@ spec:
             - name: hlf-crypto-config
               mountPath: /etc/hyperledger/fabric/crypto
       volumes:
-        - name: chaincode-buildpack
-          persistentVolumeClaim:
-            claimName: chaincode-buildpack
         - name: chaincode-package
           persistentVolumeClaim:
             claimName: chaincode-package
