@@ -18,7 +18,31 @@ The source code herein is not production ready.
 ❯ ./deploy.sh
 ```
 
-- Delete the network
+Terminal 1
+
+```bash
+❯ kubectl exec -it -n dummy-com $(kubectl get pod -n dummy-com -l component=cli.peer0.org1.dummy.com -o jsonpath="{.items[0].metadata.name}") -- bash
+
+❯ cd artifacts;
+❯ peer channel create -c $CHANNEL_NAME -f ./channelall.tx -o orderer0-dummy-com:7050 --tls --cafile $ORDERER_CA
+❯ peer channel join -b ./channelall.block
+❯ peer channel list
+```
+
+
+
+Terminal 2
+
+
+```bash
+❯ kubectl exec -it -n dummy-com $(kubectl get pod -n dummy-com -l component=cli.peer0.org2.dummy.com -o jsonpath="{.items[0].metadata.name}") -- bash
+
+❯ cd artifacts;
+❯ peer channel join -b ./channelall.block
+❯ peer channel list
+```
+
+## Cleanup
 
 ```bash
 ❯ kubectl delete pod,deployment,service,job,secrets,pvc --all --namespace dummy-com && kubectl delete pv local-volume

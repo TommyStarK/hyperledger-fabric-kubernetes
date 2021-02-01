@@ -23,14 +23,8 @@ spec:
           tty: true
           stdin: true
           env:
-            # - name: TZ
-            #   value: "Europe/Paris"
             - name: FABRIC_LOGGING_SPEC
               value: info
-            # - name: GOPATH
-            #   value: /opt/gopath
-            # - name: CORE_PEER_ID
-            #   value: cli-peer0-org1-dummy-com
             - name: CHANNEL_NAME
               value: channelall
             - name: CORE_PEER_ADDRESS
@@ -39,21 +33,15 @@ spec:
               value: Org1MSP
             - name: CORE_PEER_TLS_ENABLED
               value: "true"
-            # - name: CORE_PEER_TLS_CLIENTCERT_FILE
-            #   value: /etc/hyperledger/fabric/crypto/peerOrganizations/org1.dummy.com/users/Admin@org1.dummy.com/tls/client.crt
-            # - name: CORE_PEER_TLS_CLIENTKEY_FILE
-            #   value: /etc/hyperledger/fabric/crypto/peerOrganizations/org1.dummy.com/users/Admin@org1.dummy.com/tls/client.key
             - name: CORE_PEER_TLS_ROOTCERT_FILE
               value: /etc/hyperledger/fabric/crypto/peerOrganizations/org1.dummy.com/peers/peer0.org1.dummy.com/tls/ca.crt
             - name: CORE_PEER_MSPCONFIGPATH
               value: /etc/hyperledger/fabric/crypto/peerOrganizations/org1.dummy.com/users/Admin@org1.dummy.com/msp
             - name: ORDERER_CA
               value: /etc/hyperledger/fabric/crypto/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/msp/tlscacerts/tlsca.dummy.com-cert.pem
-            # - name: ORDERER_ADMIN_TLS_SIGN_CERT
-            #   value: /etc/hyperledger/fabric/crypto/ordererOrganizations/dummy.com/users/Admin@dummy.com/msp/signcerts/Admin@dummy.com-cert.pem
-            # - name: ORDERER_ADMIN_TLS_PRIVATE_KEY
-            #   value: /etc/hyperledger/fabric/crypto/ordererOrganizations/dummy.com/users/Admin@dummy.com/msp/keystore/priv_sk
           volumeMounts:
+            - name: chaincode-buildpack
+              mountPath: /opt/buildpack
             - name: chaincode-package
               mountPath: /etc/hyperledger/fabric/chaincodes
             - name: hlf-artifacts
@@ -61,6 +49,9 @@ spec:
             - name: hlf-crypto-config
               mountPath: /etc/hyperledger/fabric/crypto
       volumes:
+        - name: chaincode-buildpack
+          persistentVolumeClaim:
+            claimName: chaincode-buildpack
         - name: chaincode-package
           persistentVolumeClaim:
             claimName: chaincode-package

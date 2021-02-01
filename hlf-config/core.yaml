@@ -558,9 +558,9 @@ chaincode:
     # chaincode. The external builder detection processing will iterate over the
     # builders in the order specified below.
     externalBuilders:
-        - path: /opt/buildpack/bin
-          name: buildpack
-
+        - name: buildpack
+          path: /opt/buildpack/bin
+          
     # The maximum duration to wait for the chaincode build and install process
     # to complete.
     installTimeout: 300s
@@ -593,10 +593,12 @@ chaincode:
 
     # enabled system chaincodes
     system:
-        _lifecycle: enable
-        cscc: enable
-        lscc: enable
-        qscc: enable
+      _lifecycle: enable
+      cscc: enable
+      lscc: enable
+      escc: enable
+      vscc: enable
+      qscc: enable
 
     # Logging section for the chaincode container
     logging:
