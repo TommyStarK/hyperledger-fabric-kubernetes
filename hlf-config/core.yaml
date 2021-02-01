@@ -559,7 +559,7 @@ chaincode:
     # builders in the order specified below.
     externalBuilders:
         - name: buildpack
-          path: /opt/buildpack/bin
+          path: /opt/buildpack
           
     # The maximum duration to wait for the chaincode build and install process
     # to complete.
