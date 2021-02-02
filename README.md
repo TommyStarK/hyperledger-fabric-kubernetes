@@ -16,6 +16,8 @@ The source code herein is not production ready.
 
 ```bash
 ❯ ./deploy.sh
+# wait until all resources are up and running
+❯ watch -n 0.1 kubectl get all --namespace dummy-com
 ```
 
 Terminal 1
@@ -26,9 +28,11 @@ Terminal 1
 ❯ cd artifacts;
 ❯ peer channel create -c $CHANNEL_NAME -f ./channelall.tx -o orderer0-dummy-com:7050 --tls --cafile $ORDERER_CA;
 ❯ peer channel join -b ./channelall.block;
-❯ peer channel list;
 ❯ cd -;
 ❯ peer lifecycle chaincode install ./chaincodes/chaincode-as-external-service/chaincode-as-external-service.tgz;
+❯ peer lifecycle chaincode approveformyorg  -o orderer0-dummy-com:7050 --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name chaincode-as-external-service --version 1.0 --init-required --package-id chaincode-as-external-service:33b295bb4ac3f8dead7bddb9e86315aa7b3729b76d6d53f9379ddba6db900f7f --sequence 1 --signature-policy "AND ('Org1MSP.peer','Org2MSP.peer')"
+❯ peer lifecycle chaincode queryapproved -C $CHANNEL_NAME -n chaincode-as-external-service --sequence 1
+❯ peer lifecycle chaincode checkcommitreadiness -o orderer0-dummy-com:7050 --channelID $CHANNEL_NAME --tls --cafile $ORDERER_CA --name chaincode-as-external-service --version 1.0 --init-required --sequence 1
 ```
 
 Terminal 2
@@ -38,7 +42,11 @@ Terminal 2
 
 ❯ cd artifacts;
 ❯ peer channel join -b ./channelall.block
-❯ peer channel list
+❯ cd -;
+❯ peer lifecycle chaincode install ./chaincodes/chaincode-as-external-service/chaincode-as-external-service.tgz;
+❯ peer lifecycle chaincode approveformyorg  -o orderer0-dummy-com:7050 --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name chaincode-as-external-service --version 1.0 --init-required --package-id chaincode-as-external-service:33b295bb4ac3f8dead7bddb9e86315aa7b3729b76d6d53f9379ddba6db900f7f --sequence 1 --signature-policy "AND ('Org1MSP.peer','Org2MSP.peer')"
+❯ peer lifecycle chaincode queryapproved -C $CHANNEL_NAME -n chaincode-as-external-service --sequence 1
+❯ peer lifecycle chaincode checkcommitreadiness -o orderer0-dummy-com:7050 --channelID $CHANNEL_NAME --tls --cafile $ORDERER_CA --name chaincode-as-external-service --version 1.0 --init-required --sequence 1
 ```
 
 ## Cleanup
