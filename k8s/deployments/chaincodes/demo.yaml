@@ -23,6 +23,6 @@ spec:
             - name: CHAINCODE_SERVER_ADDRESS
               value: 0.0.0.0:9999
             - name: CHAINCODE_ID
-              value: chaincode-as-external-service_1.0:47e498ee398394870cf741c7037178a9f1608575c5367f8bfb198c1801fdcc28
+              value: chaincode-as-external-service:aa59fb583d21ef842047bcd5875fb8d960852e0a29f3390b75b1054ccd85fc87
           ports:
             - containerPort: 9999
