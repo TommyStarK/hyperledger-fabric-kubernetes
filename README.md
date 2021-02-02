@@ -24,15 +24,14 @@ Terminal 1
 ❯ kubectl exec -it -n dummy-com $(kubectl get pod -n dummy-com -l component=cli.peer0.org1.dummy.com -o jsonpath="{.items[0].metadata.name}") -- bash
 
 ❯ cd artifacts;
-❯ peer channel create -c $CHANNEL_NAME -f ./channelall.tx -o orderer0-dummy-com:7050 --tls --cafile $ORDERER_CA
-❯ peer channel join -b ./channelall.block
-❯ peer channel list
+❯ peer channel create -c $CHANNEL_NAME -f ./channelall.tx -o orderer0-dummy-com:7050 --tls --cafile $ORDERER_CA;
+❯ peer channel join -b ./channelall.block;
+❯ peer channel list;
+❯ cd -;
+❯ peer lifecycle chaincode install ./chaincodes/chaincode-as-external-service/chaincode-as-external-service.tgz;
 ```
 
-
-
 Terminal 2
-
 
 ```bash
 ❯ kubectl exec -it -n dummy-com $(kubectl get pod -n dummy-com -l component=cli.peer0.org2.dummy.com -o jsonpath="{.items[0].metadata.name}") -- bash
