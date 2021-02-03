@@ -17,10 +17,10 @@ The source code herein is not production ready.
 ```bash
 ❯ ./deploy.sh
 # wait until all resources are up and running
-❯ watch -n 0.1 kubectl get all --namespace dummy-com
+❯ watch -n 1 kubectl get all --namespace dummy-com
 ```
 
-Now, we are goint to operate the peer of Org1 and the peer for Org2 in order to create and join a channel as well as install the chaincode.
+Now, we are goint to operate the peer of Org1 and the peer of Org2 in order to create and join a channel as well as install the chaincode.
 
 You'll need two different terminals and run the following commands:
 
