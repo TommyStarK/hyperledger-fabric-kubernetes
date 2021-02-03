@@ -85,10 +85,24 @@ We are almost done, chaincode has been approved by both Org1 and Org2, we can no
 
 
 # commit the chaincode
-❯ peer lifecycle chaincode commit -o orderer0-dummy-com:7050 --channelID $CHANNEL_NAME --name chaincode-as-external-service --version 1.0 --sequence 1 --init-required --tls --cafile $ORDERER_CA --peerAddresses peer0-org1-dummy-com:7051 --peerAddresses peer0-org2-dummy-com:7051
+❯ peer lifecycle chaincode commit -o orderer0-dummy-com:7050 --channelID $CHANNEL_NAME --name chaincode-as-external-service --version 1.0 --sequence 1 --init-required --tls --cafile $ORDERER_CA --peerAddresses peer0-org1-dummy-com:7051 --tlsRootCertFiles $CORE_PEER_TLS_ROOTCERT_FILE  --peerAddresses peer0-org2-dummy-com:7051 --tlsRootCertFiles /etc/hyperledger/fabric/crypto/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/tls/ca.crt
 ```
 
 That's it ! The chaincode is ready to be invoked :smile: .
+
+- Terminal 1: CLI configured for the peer of Org1
+
+```bash
+# init and invoke the chaincode
+❯ peer chaincode invoke -o orderer0-dummy-com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n chaincode-as-external-service  --peerAddresses peer0-org1-dummy-com:7051 --tlsRootCertFiles $CORE_PEER_TLS_ROOTCERT_FILE  --peerAddresses peer0-org2-dummy-com:7051 --tlsRootCertFiles /etc/hyperledger/fabric/crypto/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/tls/ca.crt --isInit -c '{"function":"Init","Args":[]}'
+```
+
+- Terminal 2: CLI configured for the peer of Org2
+
+```bash
+# query the chaincode
+❯ peer chaincode query -C $CHANNEL_NAME -n chaincode-as-external-service -c '{"Args":["Query", "default-asset"]}'
+```
 
 ## Cleanup
 
