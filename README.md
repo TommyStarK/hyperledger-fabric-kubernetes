@@ -85,14 +85,7 @@ We are almost done, chaincode has been approved by both Org1 and Org2, we can no
 
 
 # commit the chaincode
-❯ peer lifecycle chaincode commit -o orderer0-dummy-com:7050 --channelID $CHANNEL_NAME --name chaincode-as-external-service --version 1.0 --sequence 1 --init-required --tls --cafile $ORDERER_CA
-```
-
-- Terminal 2: CLI configured for the peer of Org2
-
-```bash
-# commit the chaincode
-❯ peer lifecycle chaincode commit -o orderer0-dummy-com:7050 --channelID $CHANNEL_NAME --name chaincode-as-external-service --version 1.0 --sequence 1 --init-required --tls --cafile $ORDERER_CA
+❯ peer lifecycle chaincode commit -o orderer0-dummy-com:7050 --channelID $CHANNEL_NAME --name chaincode-as-external-service --version 1.0 --sequence 1 --init-required --tls --cafile $ORDERER_CA --peerAddresses peer0-org1-dummy-com:7051 --peerAddresses peer0-org2-dummy-com:7051
 ```
 
 That's it ! The chaincode is ready to be invoked :smile: .
