@@ -8,7 +8,7 @@ spec:
   storageClassName: manual
   persistentVolumeReclaimPolicy: Retain
   capacity:
-    storage: 10Gi
+    storage: 1Gi
   accessModes:
     - ReadWriteMany
   hostPath:
