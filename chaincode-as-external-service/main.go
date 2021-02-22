@@ -19,8 +19,8 @@ func main() {
 	}
 
 	server := &shim.ChaincodeServer{
-		CCID:     os.Getenv("CHAINCODE_ID"),
-		Address:  os.Getenv("CHAINCODE_SERVER_ADDRESS"),
+		CCID:     os.Getenv("CORE_CHAINCODE_ID"),
+		Address:  os.Getenv("CORE_CHAINCODE_ADDRESS"),
 		CC:       chaincode,
 		TLSProps: tls,
 	}
