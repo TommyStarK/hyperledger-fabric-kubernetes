@@ -20,9 +20,9 @@ spec:
         - name: chaincode-demo
           image: tommystark/chaincode-as-external-service
           env:
-            - name: CHAINCODE_SERVER_ADDRESS
+            - name: CORE_CHAINCODE_ADDRESS
               value: 0.0.0.0:9999
-            - name: CHAINCODE_ID
+            - name: CORE_CHAINCODE_ID
               value: chaincode-as-external-service:33b295bb4ac3f8dead7bddb9e86315aa7b3729b76d6d53f9379ddba6db900f7f
           ports:
             - containerPort: 9999
