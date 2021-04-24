@@ -10,7 +10,7 @@ spec:
       restartPolicy: Never
       initContainers:
         - name: git-clone
-          image: bitnami/git
+          image: alpine/git
           imagePullPolicy: IfNotPresent
           args:
             - clone
