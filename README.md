@@ -8,6 +8,9 @@ talk with the Docker daemon.
 
 Using chaincode as an external service, the chaincode endpoint is deployed to the peer. The chaincode can be built and lauched separated from the peer. Therefore, there is no more dependency on the Kubernetes CRI implementation.
 
+⚠️ For demo purposes the chaincode package ID is hardcoded. This is mainly due to the fact that the chaincode package has already been generated and is present within the `chaincode-as-external-service` folder. For a given peer version, the chaincode package ID computed will always be the same. If you wish to dynamically generate the chaincode package then you must propagate accordingly the resulting package ID before starting the chaincode server.
+You can find one possible solution in the issue [#2](https://github.com/TommyStarK/hyperledger-fabric-kubernetes/issues/3#issuecomment-798954187).
+
 The source code herein is not production ready.
 
 ## Usage
@@ -88,7 +91,7 @@ We are almost done, chaincode has been approved by both Org1 and Org2, we can no
 ❯ peer lifecycle chaincode commit -o orderer0-dummy-com:7050 --channelID $CHANNEL_NAME --name chaincode-as-external-service --version 1.0 --sequence 1 --init-required --tls --cafile $ORDERER_CA --peerAddresses peer0-org1-dummy-com:7051 --tlsRootCertFiles $CORE_PEER_TLS_ROOTCERT_FILE  --peerAddresses peer0-org2-dummy-com:7051 --tlsRootCertFiles /etc/hyperledger/fabric/crypto/peerOrganizations/org2.dummy.com/peers/peer0.org2.dummy.com/tls/ca.crt
 ```
 
-That's it ! The chaincode is ready to be invoked :smile: .
+That's it ! The chaincode is ready to be invoked :smile:.
 
 - Terminal 1: CLI configured for the peer of Org1
 
