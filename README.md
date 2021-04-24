@@ -12,7 +12,7 @@ The source code herein is not production ready.
 
 ## Usage
 
-- Assuming you have a running cluster or minikube:
+- Assuming you have minikube running:
 
 ```bash
 ❯ ./deploy.sh
@@ -20,7 +20,7 @@ The source code herein is not production ready.
 ❯ watch -n 1 kubectl get all --namespace dummy-com
 ```
 
-Now, we are goint to operate the peer of Org1 and the peer of Org2 in order to create and join a channel as well as install the chaincode.
+Now, we are going to operate the peer of Org1 and the peer of Org2 in order to create and join a channel as well as install the chaincode.
 
 You'll need two different terminals and run the following commands:
 
