@@ -1,0 +1,34 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: orderer0-dummy-com
+  namespace: dummy-com
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0" # no limit
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true" # orderer should teminate the ssl traffic
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: orderer0.dummy.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: orderer0-dummy-com
+                port:
+                  number: 7050
+    - host: operations.orderer0.dummy.com
+      http:
+        paths:
+          - path: /healthz
+            pathType: Exact
+            backend:
+              service:
+                name: orderer0-dummy-com
+                port:
+                  number: 8443
+  tls:
+    - hosts:
+        - orderer0.dummy.com

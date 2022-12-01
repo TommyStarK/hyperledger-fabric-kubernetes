@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: cli-peer0-org2-dummy-com
-          image: hyperledger/fabric-tools:2.3.0
+          image: hyperledger/fabric-tools:2.4
           imagePullPolicy: IfNotPresent
           workingDir: /etc/hyperledger/fabric/
           tty: true

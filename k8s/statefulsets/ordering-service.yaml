@@ -1,0 +1,263 @@
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orderer0-dummy-com
+  namespace: dummy-com
+  labels: 
+    component: orderer0.dummy.com
+    type: orderer
+spec:
+  replicas: 1
+  serviceName: orderer0-dummy-com
+  selector:
+    matchLabels:
+      component: orderer0.dummy.com
+      type: orderer
+  template:
+    metadata:
+      labels:
+        component: orderer0.dummy.com
+        type: orderer
+    spec:
+      volumes:
+        - name: hlf-artifacts
+          persistentVolumeClaim:
+            claimName: hlf-artifacts
+        - name: hlf-crypto-config
+          persistentVolumeClaim:
+            claimName: hlf-crypto-config
+      containers:
+        - name: orderer0-dummy-com
+          image: hyperledger/fabric-orderer:2.4
+          imagePullPolicy: IfNotPresent
+          workingDir: /opt/gopath/src/github.com/hyperledger/fabric
+          env:
+            - name: FABRIC_LOGGING_SPEC
+              value: info
+            - name: ORDERER_GENERAL_BOOTSTRAPMETHOD
+              value: file
+            - name: ORDERER_GENERAL_BOOTSTRAPFILE
+              value: /var/hyperledger/orderer/orderer.genesis.block
+            - name: ORDERER_GENERAL_LISTENADDRESS
+              value: "0.0.0.0"
+            - name: ORDERER_GENERAL_LISTENPORT
+              value: "7050"
+            - name: ORDERER_OPERATIONS_LISTENADDRESS
+              value: "0.0.0.0:8443"
+            - name: ORDERER_GENERAL_LOCALMSPID
+              value: OrdererMSP
+            - name: ORDERER_GENERAL_LOCALMSPDIR
+              value: /var/hyperledger/orderer/msp
+            - name: ORDERER_GENERAL_TLS_ENABLED
+              value: "true"
+            - name: ORDERER_GENERAL_TLS_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_GENERAL_TLS_CERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+            - name: ORDERER_GENERAL_CLUSTER_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8443
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            periodSeconds: 1
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 7050
+          - containerPort: 8443
+          volumeMounts:
+            - name: hlf-artifacts
+              mountPath: /var/hyperledger/orderer/orderer.genesis.block
+              subPath: orderer.genesis.block
+            - name: hlf-crypto-config
+              mountPath: /var/hyperledger/orderer/msp
+              subPath: ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/msp
+            - name: hlf-crypto-config
+              mountPath: /var/hyperledger/orderer/tls
+              subPath: ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/tls
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orderer1-dummy-com
+  namespace: dummy-com
+  labels: 
+    component: orderer1.dummy.com
+    type: orderer
+spec:
+  replicas: 1
+  serviceName: orderer1-dummy-com
+  selector:
+    matchLabels:
+      component: orderer1.dummy.com
+      type: orderer
+  template:
+    metadata:
+      labels:
+        component: orderer1.dummy.com
+        type: orderer
+    spec:
+      volumes:
+        - name: hlf-artifacts
+          persistentVolumeClaim:
+            claimName: hlf-artifacts
+        - name: hlf-crypto-config
+          persistentVolumeClaim:
+            claimName: hlf-crypto-config
+      containers:
+        - name: orderer1-dummy-com
+          image: hyperledger/fabric-orderer:2.4
+          imagePullPolicy: IfNotPresent
+          workingDir: /opt/gopath/src/github.com/hyperledger/fabric
+          env:
+            - name: FABRIC_LOGGING_SPEC
+              value: info
+            - name: ORDERER_GENERAL_BOOTSTRAPMETHOD
+              value: file
+            - name: ORDERER_GENERAL_BOOTSTRAPFILE
+              value: /var/hyperledger/orderer/orderer.genesis.block
+            - name: ORDERER_GENERAL_LISTENADDRESS
+              value: "0.0.0.0"
+            - name: ORDERER_GENERAL_LISTENPORT
+              value: "7050"
+            - name: ORDERER_OPERATIONS_LISTENADDRESS
+              value: "0.0.0.0:8443"
+            - name: ORDERER_GENERAL_LOCALMSPID
+              value: OrdererMSP
+            - name: ORDERER_GENERAL_LOCALMSPDIR
+              value: /var/hyperledger/orderer/msp
+            - name: ORDERER_GENERAL_TLS_ENABLED
+              value: "true"
+            - name: ORDERER_GENERAL_TLS_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_GENERAL_TLS_CERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+            - name: ORDERER_GENERAL_CLUSTER_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8443
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            periodSeconds: 1
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 7050
+          - containerPort: 8443
+          volumeMounts:
+            - name: hlf-artifacts
+              mountPath: /var/hyperledger/orderer/orderer.genesis.block
+              subPath: orderer.genesis.block
+            - name: hlf-crypto-config
+              mountPath: /var/hyperledger/orderer/msp
+              subPath: ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/msp
+            - name: hlf-crypto-config
+              mountPath: /var/hyperledger/orderer/tls
+              subPath: ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/tls
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orderer2-dummy-com
+  namespace: dummy-com
+  labels: 
+    component: orderer2.dummy.com
+    type: orderer
+spec:
+  replicas: 1
+  serviceName: orderer2-dummy-com
+  selector:
+    matchLabels:
+      component: orderer2.dummy.com
+      type: orderer
+  template:
+    metadata:
+      labels:
+        component: orderer2.dummy.com
+        type: orderer
+    spec:
+      volumes:
+        - name: hlf-artifacts
+          persistentVolumeClaim:
+            claimName: hlf-artifacts
+        - name: hlf-crypto-config
+          persistentVolumeClaim:
+            claimName: hlf-crypto-config
+      containers:
+        - name: orderer2-dummy-com
+          image: hyperledger/fabric-orderer:2.4
+          imagePullPolicy: IfNotPresent
+          workingDir: /opt/gopath/src/github.com/hyperledger/fabric
+          env:
+            - name: FABRIC_LOGGING_SPEC
+              value: info
+            - name: ORDERER_GENERAL_BOOTSTRAPMETHOD
+              value: file
+            - name: ORDERER_GENERAL_BOOTSTRAPFILE
+              value: /var/hyperledger/orderer/orderer.genesis.block
+            - name: ORDERER_GENERAL_LISTENADDRESS
+              value: "0.0.0.0"
+            - name: ORDERER_GENERAL_LISTENPORT
+              value: "7050"
+            - name: ORDERER_OPERATIONS_LISTENADDRESS
+              value: "0.0.0.0:8443"
+            - name: ORDERER_GENERAL_LOCALMSPID
+              value: OrdererMSP
+            - name: ORDERER_GENERAL_LOCALMSPDIR
+              value: /var/hyperledger/orderer/msp
+            - name: ORDERER_GENERAL_TLS_ENABLED
+              value: "true"
+            - name: ORDERER_GENERAL_TLS_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_GENERAL_TLS_CERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+            - name: ORDERER_GENERAL_CLUSTER_ROOTCAS
+              value: "[/var/hyperledger/orderer/tls/ca.crt]"
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
+              value: /var/hyperledger/orderer/tls/server.crt
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
+              value: /var/hyperledger/orderer/tls/server.key
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8443
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            periodSeconds: 1
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 7050
+          - containerPort: 8443
+          volumeMounts:
+            - name: hlf-artifacts
+              mountPath: /var/hyperledger/orderer/orderer.genesis.block
+              subPath: orderer.genesis.block
+            - name: hlf-crypto-config
+              mountPath: /var/hyperledger/orderer/msp
+              subPath: ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/msp
+            - name: hlf-crypto-config
+              mountPath: /var/hyperledger/orderer/tls
+              subPath: ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/tls

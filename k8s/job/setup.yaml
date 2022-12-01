@@ -27,7 +27,7 @@ spec:
               mountPath: /repo
       containers:
       - name: fabric-tools
-        image: hyperledger/fabric-tools:2.3.0
+        image: hyperledger/fabric-tools:2.4
         imagePullPolicy: IfNotPresent
         workingDir: /repo/hlf-config
         command: ["/bin/sh",  "-c"]
