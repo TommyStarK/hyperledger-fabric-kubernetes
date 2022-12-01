@@ -1,17 +1,13 @@
 resources:
-  - services/ordering.service.dummy.com.yaml
-  - services/org1.dummy.com/couchdb.yaml
+  - services/ordering-service.yaml
   - services/org1.dummy.com/peer0.yaml
   - services/org2.dummy.com/peer0.yaml
   - services/org3.dummy.com/peer0.yaml
   - services/chaincodes/demo.yaml
-  - deployments/orderer0.dummy.com.yaml
-  - deployments/orderer1.dummy.com.yaml
-  - deployments/orderer2.dummy.com.yaml
-  - deployments/org1.dummy.com/couchdb.yaml
-  - deployments/org1.dummy.com/peer0.yaml
-  - deployments/org2.dummy.com/peer0.yaml
-  - deployments/org3.dummy.com/peer0.yaml
+  - statefulsets/ordering-service.yaml
+  - statefulsets/org1.dummy.com/peer0.yaml
+  - statefulsets/org2.dummy.com/peer0.yaml
+  - statefulsets/org3.dummy.com/peer0.yaml
   - deployments/chaincodes/demo.yaml
   - deployments/org1.dummy.com/cli.yaml
   - deployments/org2.dummy.com/cli.yaml

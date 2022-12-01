@@ -6,15 +6,23 @@ OrdererOrgs:
       - Hostname: orderer0
         SANS:
           - localhost
+          - 127.0.0.1
+          - ::1
           - orderer0-dummy-com
+          - orderer0-dummy-com.dummy-com.svc.cluster.local
       - Hostname: orderer1
-        SANS:
           - localhost
+          - 127.0.0.1
+          - ::1
           - orderer1-dummy-com
+          - orderer1-dummy-com.dummy-com.svc.cluster.local
       - Hostname: orderer2
         SANS:
           - localhost
+          - 127.0.0.1
+          - ::1
           - orderer2-dummy-com
+          - orderer2-dummy-com.dummy-com.svc.cluster.local
 PeerOrgs:
   - Name: Org1
     Domain: org1.dummy.com
@@ -23,7 +31,10 @@ PeerOrgs:
       Count: 1
       SANS:
         - localhost
+        - 127.0.0.1
+        - ::1
         - "{{.Hostname}}-org1-dummy-com"
+        - "{{.Hostname}}-org1-dummy-com.dummy-com.svc.cluster.local"
     Users:
       Count: 1
   - Name: Org2
@@ -33,7 +44,10 @@ PeerOrgs:
       Count: 1
       SANS:
         - localhost
+        - 127.0.0.1
+        - ::1
         - "{{.Hostname}}-org2-dummy-com"
+        - "{{.Hostname}}-org2-dummy-com.dummy-com.svc.cluster.local"
     Users:
       Count: 1
   - Name: Org3
@@ -43,6 +57,9 @@ PeerOrgs:
       Count: 1
       SANS:
         - localhost
+        - 127.0.0.1
+        - ::1
         - "{{.Hostname}}-org3-dummy-com"
+        - "{{.Hostname}}-org3-dummy-com.dummy-com.svc.cluster.local"
     Users:
       Count: 1

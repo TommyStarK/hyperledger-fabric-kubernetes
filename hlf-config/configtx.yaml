@@ -9,11 +9,26 @@
 Organizations:
 
     - &OrdererOrg
+        # Name is the key by which this org will be referenced in channel
+        # configuration transactions.
+        # Name can include alphanumeric characters as well as dots and dashes.
         Name: OrdererOrg
-        # ID to load the MSP definition as
+
+        # SkipAsForeign can be set to true for org definitions which are to be
+        # inherited from the orderer system channel during channel creation.  This
+        # is especially useful when an admin of a single org without access to the
+        # MSP directories of the other orgs wishes to create a channel.  Note
+        # this property must always be set to false for orgs included in block
+        # creation.
+        # SkipAsForeign: false
+
+        # ID is the key by which this org's MSP definition will be referenced.
+        # ID can include alphanumeric characters as well as dots and dashes.
         ID: OrdererMSP
+
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: crypto-config/ordererOrganizations/dummy.com/msp
+
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
         #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
@@ -28,6 +43,8 @@ Organizations:
                 Type: Signature
                 Rule: "OR('OrdererMSP.admin')"
 
+        # OrdererEndpoints is a list of all orderers this org runs which clients
+        # and peers may to connect to to push transactions and receive blocks respectively.
         OrdererEndpoints:
             - orderer0-dummy-com:7050
             - orderer1-dummy-com:7050
@@ -50,6 +67,9 @@ Organizations:
             Endorsement:
                 Type: Signature
                 Rule: "OR('Org1MSP.peer')"
+        # AnchorPeers defines the location of peers which can be used for
+        # cross-org gossip communication. Note, this value is only encoded in
+        # the genesis block in the Application section context.
         AnchorPeers:
             - Host: peer0-org1-dummy-com
               Port: 7051
@@ -161,33 +181,112 @@ Capabilities:
 #
 ################################################################################
 Application: &ApplicationDefaults
+  ACLs: &ACLsDefault
+      # This section provides defaults for policies for various resources
+      # in the system. These "resources" could be functions on system chaincodes
+      # (e.g., "GetBlockByNumber" on the "qscc" system chaincode) or other resources
+      # (e.g.,who can receive Block events). This section does NOT specify the resource's
+      # definition or API, but just the ACL policy for it.
+      #
+      # Users can override these defaults with their own policy mapping by defining the
+      # mapping under ACLs in their channel definition
 
-    # Organizations is the list of orgs which are defined as participants on
-    # the application side of the network
-    Organizations:
+      #---New Lifecycle System Chaincode (_lifecycle) function to policy mapping for access control--#
 
-    # Policies defines the set of policies at this level of the config tree
-    # For Application policies, their canonical path is
-    #   /Channel/Application/<PolicyName>
-    Policies:
-        Readers:
-            Type: ImplicitMeta
-            Rule: "ANY Readers"
-        Writers:
-            Type: ImplicitMeta
-            Rule: "ANY Writers"
-        Admins:
-            Type: ImplicitMeta
-            Rule: "MAJORITY Admins"
-        LifecycleEndorsement:
-            Type: ImplicitMeta
-            Rule: "MAJORITY Endorsement"
-        Endorsement:
-            Type: ImplicitMeta
-            Rule: "MAJORITY Endorsement"
+      # ACL policy for _lifecycle's "CheckCommitReadiness" function
+      _lifecycle/CheckCommitReadiness: /Channel/Application/Writers
 
-    Capabilities:
-        <<: *ApplicationCapabilities
+      # ACL policy for _lifecycle's "CommitChaincodeDefinition" function
+      _lifecycle/CommitChaincodeDefinition: /Channel/Application/Writers
+
+      # ACL policy for _lifecycle's "QueryChaincodeDefinition" function
+      _lifecycle/QueryChaincodeDefinition: /Channel/Application/Writers
+
+      # ACL policy for _lifecycle's "QueryChaincodeDefinitions" function
+      _lifecycle/QueryChaincodeDefinitions: /Channel/Application/Writers
+
+      #---Lifecycle System Chaincode (lscc) function to policy mapping for access control---#
+
+      # ACL policy for lscc's "getid" function
+      lscc/ChaincodeExists: /Channel/Application/Readers
+
+      # ACL policy for lscc's "getdepspec" function
+      lscc/GetDeploymentSpec: /Channel/Application/Readers
+
+      # ACL policy for lscc's "getccdata" function
+      lscc/GetChaincodeData: /Channel/Application/Readers
+
+      # ACL Policy for lscc's "getchaincodes" function
+      lscc/GetInstantiatedChaincodes: /Channel/Application/Readers
+
+      #---Query System Chaincode (qscc) function to policy mapping for access control---#
+
+      # ACL policy for qscc's "GetChainInfo" function
+      qscc/GetChainInfo: /Channel/Application/Readers
+
+      # ACL policy for qscc's "GetBlockByNumber" function
+      qscc/GetBlockByNumber: /Channel/Application/Readers
+
+      # ACL policy for qscc's  "GetBlockByHash" function
+      qscc/GetBlockByHash: /Channel/Application/Readers
+
+      # ACL policy for qscc's "GetTransactionByID" function
+      qscc/GetTransactionByID: /Channel/Application/Readerss
+
+      # ACL policy for qscc's "GetBlockByTxID" function
+      qscc/GetBlockByTxID: /Channel/Application/Readers
+
+      #---Configuration System Chaincode (cscc) function to policy mapping for access control---#
+
+      # ACL policy for cscc's "GetConfigBlock" function
+      cscc/GetConfigBlock: /Channel/Application/Readers
+
+      # ACL policy for cscc's "GetChannelConfig" function
+      cscc/GetChannelConfig: /Channel/Application/Readers
+
+      #---Miscellaneous peer function to policy mapping for access control---#
+
+      # ACL policy for invoking chaincodes on peer
+      peer/Propose: /Channel/Application/Writers
+
+      # ACL policy for chaincode to chaincode invocation
+      peer/ChaincodeToChaincode: /Channel/Application/Writers
+
+      #---Events resource to policy mapping for access control###---#
+
+      # ACL policy for sending block events
+      event/Block: /Channel/Application/Readers
+
+      # ACL policy for sending filtered block events
+      event/FilteredBlock: /Channel/Application/Readers
+
+  # Organizations is the list of orgs which are defined as participants on
+  # the application side of the network
+  Organizations:
+
+  # Policies defines the set of policies at this level of the config tree
+  # For Application policies, their canonical path is
+  #   /Channel/Application/<PolicyName>
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+
+  Capabilities:
+    <<: *ApplicationCapabilities
+
 
 ################################################################################
 #
@@ -203,7 +302,7 @@ Orderer: &OrdererDefaults
     OrdererType: etcdraft
 
     # Batch Timeout: The amount of time to wait before creating a batch
-    BatchTimeout: 2s
+    BatchTimeout: 100ms
 
     # Batch Size: Controls the number of messages batched into a block
     BatchSize:
@@ -213,7 +312,7 @@ Orderer: &OrdererDefaults
 
         # Absolute Max Bytes: The absolute maximum number of bytes allowed for
         # the serialized messages in a batch.
-        AbsoluteMaxBytes: 99 MB
+        AbsoluteMaxBytes: 1 MB
 
         # Preferred Max Bytes: The preferred maximum number of bytes allowed for
         # the serialized messages in a batch. A message larger than the preferred
@@ -225,19 +324,45 @@ Orderer: &OrdererDefaults
     MaxChannels: 0
 
     EtcdRaft:
-        Consenters:
-        - Host: orderer0-dummy-com
-          Port: 7050
-          ClientTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/tls/server.crt
-          ServerTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/tls/server.crt
-        - Host: orderer1-dummy-com
-          Port: 7050
-          ClientTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/tls/server.crt
-          ServerTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/tls/server.crt
-        - Host: orderer2-dummy-com
-          Port: 7050
-          ClientTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/tls/server.crt
-          ServerTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/tls/server.crt
+      Consenters:
+      - Host: orderer0-dummy-com
+        Port: 7050
+        ClientTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer0.dummy.com/tls/server.crt
+      - Host: orderer1-dummy-com
+        Port: 7050
+        ClientTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer1.dummy.com/tls/server.crt
+      - Host: orderer2-dummy-com
+        Port: 7050
+        ClientTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/dummy.com/orderers/orderer2.dummy.com/tls/server.crt
+
+      # Options to be specified for all the etcd/raft nodes. The values here
+      # are the defaults for all new channels and can be modified on a
+      # per-channel basis via configuration updates.
+      Options:
+        # TickInterval is the time interval between two Node.Tick invocations.
+        TickInterval: 500ms
+
+        # ElectionTick is the number of Node.Tick invocations that must pass
+        # between elections. That is, if a follower does not receive any
+        # message from the leader of current term before ElectionTick has
+        # elapsed, it will become candidate and start an election.
+        # ElectionTick must be greater than HeartbeatTick.
+        ElectionTick: 10
+
+        # HeartbeatTick is the number of Node.Tick invocations that must
+        # pass between heartbeats. That is, a leader sends heartbeat
+        # messages to maintain its leadership every HeartbeatTick ticks.
+        HeartbeatTick: 1
+
+        # MaxInflightBlocks limits the max number of in-flight append messages
+        # during optimistic replication phase.
+        MaxInflightBlocks: 5
+
+        # SnapshotIntervalSize defines number of bytes per which a snapshot is taken
+        SnapshotIntervalSize: 16 MB
 
     # Organizations is the list of orgs which are defined as participants on
     # the orderer side of the network
