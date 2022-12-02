@@ -94,7 +94,7 @@ spec:
             - name: CORE_LEDGER_STATE_STATEDATABASE
               value: CouchDB
             - name: CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS
-              value: localhost:5984
+              value: localhost:5984 # deployed in the same pod and using loopback to avoid performance issue
             - name: CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -105,6 +105,10 @@ spec:
                 secretKeyRef:
                   name: couchdb-org3-dummy-com
                   key: password
+          #
+          # TODO: grpc probe ?
+          # disabled as peer health check include docker
+          #
           # livenessProbe:
           #   httpGet:
           #     path: /healthz

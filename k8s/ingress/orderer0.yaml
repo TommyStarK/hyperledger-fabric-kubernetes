@@ -18,7 +18,7 @@ spec:
               service:
                 name: orderer0-dummy-com
                 port:
-                  number: 7050
+                  name: listen
     - host: operations.orderer0.dummy.com
       http:
         paths:
@@ -28,7 +28,7 @@ spec:
               service:
                 name: orderer0-dummy-com
                 port:
-                  number: 8443
+                  name: operations
   tls:
     - hosts:
         - orderer0.dummy.com
