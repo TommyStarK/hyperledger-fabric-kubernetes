@@ -12,6 +12,8 @@ You can find one possible solution in the issue [#2](https://github.com/TommySta
 
 The source code herein is not production ready. It demonstrates what are the building blocks and how you can achieve having your Fabric network running on Kubernetes and use chaincode as an external service. If you want to move to a more production-grade deployment of Fabric you might want to take a look [here](https://github.com/hyperledger-labs/fabric-operator).
 
+⚠️ As reported by @pdchecker, there is a privacy leakage [here](https://github.com/TommyStarK/hyperledger-fabric-kubernetes/blob/main/chaincode-as-external-service/smart_contract.go#L90). You should first fork this repository, review the code, and remove/adapt things you don’t want or need. Don’t blindly use this repository unless you know what that entails.
+
 ## Usage
 
 - Assuming you have minikube running:
