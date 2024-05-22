@@ -5,7 +5,7 @@ This repository aims to demonstrate how to deploy an Hyperledger Fabric [v2.4](h
 Legacy way of building and runing chaincodes required from the peer, a binding to the Docker socket for being able to
 talk with the Docker daemon.
 
-Using chaincode as an external service, the chaincode endpoint is deployed to the peer. The chaincode can be built and lauched separated from the peer. Therefore, there is no more dependency on the Kubernetes CRI implementation.
+Using chaincode as an external service, the chaincode endpoint is deployed to the peer. The chaincode can be built and launched separated from the peer. Therefore, there is no more dependency on the Kubernetes CRI implementation.
 
 ⚠️ For demo purposes the chaincode package ID is hardcoded. This is mainly due to the fact that the chaincode package has already been generated and is present within the `chaincode-as-external-service` folder. For a given peer version, the chaincode package ID computed will always be the same. If you wish to dynamically generate the chaincode package then you must propagate accordingly the resulting package ID before starting the chaincode server.
 You can find one possible solution in the issue [#2](https://github.com/TommyStarK/hyperledger-fabric-kubernetes/issues/3#issuecomment-798954187).
