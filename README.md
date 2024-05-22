@@ -2,7 +2,7 @@
 
 This repository aims to demonstrate how to deploy an Hyperledger Fabric [v2.4](https://hyperledger-fabric.readthedocs.io/en/release-2.4/) network on Kubernetes, and use chaincodes as external services.
 
-Legacy way of building and runing chaincodes required from the peer, a binding to the Docker socket for being able to
+Legacy way of building and running chaincodes required from the peer, a binding to the Docker socket for being able to
 talk with the Docker daemon.
 
 Using chaincode as an external service, the chaincode endpoint is deployed to the peer. The chaincode can be built and launched separated from the peer. Therefore, there is no more dependency on the Kubernetes CRI implementation.
